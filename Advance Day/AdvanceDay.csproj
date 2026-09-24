@@ -9,10 +9,16 @@
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- Resolution order: explicit -p:GameDir, GYK2_GAME_DIR, then common Steam locations. -->
+    <GameDir Condition="'$(GameDir)' == '' and '$(GYK2_GAME_DIR)' != ''">$(GYK2_GAME_DIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('C:/Steam/steamapps/common/Graveyard Keeper 2/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">C:/Steam/steamapps/common/Graveyard Keeper 2</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('C:/Steam/steamapps/common/Graveyard Keeper/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">C:/Steam/steamapps/common/Graveyard Keeper</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('$(ProgramFiles(x86))/Steam/steamapps/common/Graveyard Keeper 2/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">$(ProgramFiles(x86))/Steam/steamapps/common/Graveyard Keeper 2</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('$(ProgramFiles(x86))/Steam/steamapps/common/Graveyard Keeper/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">$(ProgramFiles(x86))/Steam/steamapps/common/Graveyard Keeper</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('$(ProgramFiles)/Steam/steamapps/common/Graveyard Keeper 2/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">$(ProgramFiles)/Steam/steamapps/common/Graveyard Keeper 2</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('$(ProgramFiles)/Steam/steamapps/common/Graveyard Keeper/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">$(ProgramFiles)/Steam/steamapps/common/Graveyard Keeper</GameDir>
     <GameManagedDir Condition="'$(GameManagedDir)' == '' and '$(GameDir)' != ''">$(GameDir)/GraveyardKeeper2_Data/Managed</GameManagedDir>
     <BepInExCoreDir Condition="'$(BepInExCoreDir)' == '' and '$(GameDir)' != ''">$(GameDir)/BepInEx/core</BepInExCoreDir>
-    <GameManagedDir Condition="'$(GameManagedDir)' == ''">$(MSBuildProjectDirectory)/references/Managed</GameManagedDir>
-    <BepInExCoreDir Condition="'$(BepInExCoreDir)' == ''">$(MSBuildProjectDirectory)/references/BepInEx</BepInExCoreDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,10 +56,12 @@
   </ItemGroup>
 
   <Target Name="CheckModBuildReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(GameManagedDir)' == '' or '$(BepInExCoreDir)' == ''"
+           Text="Graveyard Keeper 2 was not found. Set GYK2_GAME_DIR or build with -p:GameDir=&quot;C:\path\to\Graveyard Keeper 2&quot;." />
     <ItemGroup>
       <MissingModReference Include="@(Reference)" Condition="'%(Reference.HintPath)' != '' and !Exists('%(Reference.HintPath)')" />
     </ItemGroup>
     <Error Condition="'@(MissingModReference)' != ''"
-           Text="Missing build references: @(MissingModReference->'%(HintPath)', ', '). Extract the complete source folder or pass -p:GameDir=&quot;C:\Steam\steamapps\common\Graveyard Keeper 2&quot;." />
+           Text="Missing local build references: @(MissingModReference->'%(HintPath)', ', '). Confirm BepInEx is installed in the selected Graveyard Keeper 2 folder." />
   </Target>
 </Project>
