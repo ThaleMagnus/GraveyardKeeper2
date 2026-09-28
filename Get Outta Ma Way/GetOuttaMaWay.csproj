@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Version>1.2.1</Version>
+    <AssemblyName>GetOuttaMaWay</AssemblyName>
+    <GameDir Condition="'$(GameDir)' == '' and '$(GRAVEYARD_KEEPER_GAME_DIR)' != ''">$(GRAVEYARD_KEEPER_GAME_DIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and '$(GYK2_GAME_DIR)' != ''">$(GYK2_GAME_DIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('C:/Steam/steamapps/common/Graveyard Keeper/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">C:/Steam/steamapps/common/Graveyard Keeper</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('C:/Steam/steamapps/common/Graveyard Keeper 2/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">C:/Steam/steamapps/common/Graveyard Keeper 2</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('$(MSBuildProgramFiles32)/Steam/steamapps/common/Graveyard Keeper/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">$(MSBuildProgramFiles32)/Steam/steamapps/common/Graveyard Keeper</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('D:/SteamLibrary/steamapps/common/Graveyard Keeper/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">D:/SteamLibrary/steamapps/common/Graveyard Keeper</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('E:/SteamLibrary/steamapps/common/Graveyard Keeper/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')">E:/SteamLibrary/steamapps/common/Graveyard Keeper</GameDir>
+    <GameDir Condition="'$(GameDir)' == ''">C:\Steam\steamapps\common\Graveyard Keeper</GameDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="netstandard"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/netstandard.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="LazyBearTechnology"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/LazyBearTechnology.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.IMGUIModule"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputLegacyModule"><HintPath>$(GameDir)/GraveyardKeeper2_Data/Managed/UnityEngine.InputLegacyModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="BepInEx"><HintPath>$(GameDir)/BepInEx/core/BepInEx.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(GameDir)/BepInEx/core/0Harmony.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+  <Target Name="CheckGameReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(GameDir)/GraveyardKeeper2_Data/Managed/Assembly-CSharp.dll')" Text="Game assemblies missing. Build with -p:GameDir=&amp;quot;your installed Graveyard Keeper 2 directory&amp;quot;" />
+  </Target>
+</Project>
